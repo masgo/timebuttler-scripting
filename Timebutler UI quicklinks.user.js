@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TimeButler Custom Link and Button Replacer
 // @namespace    http://tampermonkey.net/
-// @version      0.6
+// @version      0.7
 // @description  Adds custom links to the TimeButler navigation bar, replaces a specific button, and focuses on the search input on the Mitarbeiter page.
 // @author       Gemini
 // @match        https://app.timebutler.com/*
@@ -186,11 +186,11 @@
                         return;
                     }
 
-                    // Extract year and ID from the existing details link's href
+                    // Extract ID from the existing details link's href
                     const detailsHref = detailsLink.getAttribute('href');
                     const idMatch = detailsHref.match(/id=(\d+)/);
 
-                    if (idMatch && idMatch[1] && yearMatch && yearMatch[1]) {
+                    if (idMatch && idMatch[1]) {
                         const userId = idMatch[1];
                         // Construct the new calendar link URL
                         const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=15&tid=${userId}`;
@@ -211,9 +211,9 @@
 
                         // Insert the new link before the existing "Details" link within the small tag
                         smallTag.insertBefore(calendarLink, detailsLink);
-                        console.log(`Added "Kalenderansicht" link (ID: ${userId}, Year: ${year}) to Urlaubskonto section.`);
+                        console.log(`Added "Kalenderansicht" link (ID: ${userId}) to Urlaubskonto section.`);
                     } else {
-                        console.warn('Could not extract ID or Year from "Details" link href for Calendar link:', detailsHref);
+                        console.warn('Could not extract ID from "Details" link href for Calendar link:', detailsHref);
                     }
                 } else {
                     console.log('Could not find small tag or Details link in Urlaubskonto section.');
