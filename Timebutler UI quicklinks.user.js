@@ -193,7 +193,7 @@
                     if (idMatch && idMatch[1] && yearMatch && yearMatch[1]) {
                         const userId = idMatch[1];
                         // Construct the new calendar link URL
-                        const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=15&id=${userId}`;
+                        const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=15&tid=${userId}`;
 
                         // Create the new link element
                         const calendarLink = document.createElement('a');
