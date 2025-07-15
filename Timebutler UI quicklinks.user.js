@@ -189,13 +189,11 @@
                     // Extract year and ID from the existing details link's href
                     const detailsHref = detailsLink.getAttribute('href');
                     const idMatch = detailsHref.match(/id=(\d+)/);
-                    const yearMatch = detailsHref.match(/year=(\d{4})/);
 
                     if (idMatch && idMatch[1] && yearMatch && yearMatch[1]) {
                         const userId = idMatch[1];
-                        const year = yearMatch[1];
-                        // Construct the new calendar link URL (assuming ac=10 for calendar view under ha=vac)
-                        const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=10&id=${userId}&year=${year}`;
+                        // Construct the new calendar link URL
+                        const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=15&id=${userId}`;
 
                         // Create the new link element
                         const calendarLink = document.createElement('a');
