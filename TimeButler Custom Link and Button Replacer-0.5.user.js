@@ -122,7 +122,7 @@
                 // Create the new button element
                 const newButton = document.createElement('a');
                 newButton.href = newHref;
-                newButton.title = 'Urlaubsantrag'; // New title for the button
+                newButton.title = 'Kalenderansicht'; // New title for the button
                 // Copy classes from the old button to maintain styling
                 newButton.className = oldButton.className;
 
@@ -143,7 +143,7 @@
                 // Mark the new button as replaced to prevent re-processing
                 newButton.dataset.replaced = 'true';
 
-                console.log(`Replaced "Gehaltsdaten" button (ID: ${userId}) with "Urlaubsantrag" button.`);
+                console.log(`Replaced "Gehaltsdaten" button (ID: ${userId}) with "Kalenderansicht" button.`);
             } else {
                 console.warn('Could not extract ID from "Gehaltsdaten" button href:', href);
             }
