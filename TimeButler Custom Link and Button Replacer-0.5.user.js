@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TimeButler Custom Link and Button Replacer
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Adds custom links to the TimeButler navigation bar, replaces a specific button, and focuses on the search input on the Mitarbeiter page.
 // @author       Gemini
 // @match        https://app.timebutler.com/*
@@ -167,6 +167,65 @@
         }
     }
 
+   // --- Function to add Calendar link to Urlaubskonto section ---
+    function addCalendarLinkToVacationAccount() {
+        // Check if we are on the specific user details page (ac=9)
+        if (window.location.href.includes('do?ha=user&ac=9')) {
+            // Find the th element containing "Urlaubskonto"
+            const urlaubskontoTh = document.querySelector('th[colspan="4"]');
+
+            if (urlaubskontoTh && urlaubskontoTh.textContent.includes('Urlaubskonto')) {
+                // Find the small tag inside the th
+                const smallTag = urlaubskontoTh.querySelector('small');
+                const detailsLink = smallTag ? smallTag.querySelector('a[href*="ha=user&ac=13"]') : null;
+
+                if (smallTag && detailsLink) {
+                    // Check if the calendar link already exists
+                    if (document.getElementById('timebutler-calendar-link')) {
+                        console.log('Calendar link already exists in Urlaubskonto section.');
+                        return;
+                    }
+
+                    // Extract year and ID from the existing details link's href
+                    const detailsHref = detailsLink.getAttribute('href');
+                    const idMatch = detailsHref.match(/id=(\d+)/);
+                    const yearMatch = detailsHref.match(/year=(\d{4})/);
+
+                    if (idMatch && idMatch[1] && yearMatch && yearMatch[1]) {
+                        const userId = idMatch[1];
+                        const year = yearMatch[1];
+                        // Construct the new calendar link URL (assuming ac=10 for calendar view under ha=vac)
+                        const calendarHref = `https://app.timebutler.com/do?ha=vac&ac=10&id=${userId}&year=${year}`;
+
+                        // Create the new link element
+                        const calendarLink = document.createElement('a');
+                        calendarLink.href = calendarHref;
+                        calendarLink.title = 'Kalenderansicht';
+                        calendarLink.id = 'timebutler-calendar-link';
+                        // Use pull-right and ml-2 for consistent styling and spacing
+                        calendarLink.className = 'pull-right ml-2';
+
+                        // Create the icon
+                        const calendarIcon = document.createElement('i');
+                        calendarIcon.className = 'fa fa-calendar fa-fw-btn';
+                        calendarLink.appendChild(calendarIcon);
+                        calendarLink.appendChild(document.createTextNode(' Kalender')); // Text next to icon
+
+                        // Insert the new link before the existing "Details" link within the small tag
+                        smallTag.insertBefore(calendarLink, detailsLink);
+                        console.log(`Added "Kalenderansicht" link (ID: ${userId}, Year: ${year}) to Urlaubskonto section.`);
+                    } else {
+                        console.warn('Could not extract ID or Year from "Details" link href for Calendar link:', detailsHref);
+                    }
+                } else {
+                    console.log('Could not find small tag or Details link in Urlaubskonto section.');
+                }
+            } else {
+                console.log('Urlaubskonto (YYYY) th element not found on this page.');
+            }
+        }
+    }
+    
     // --- Main execution logic ---
     // Use a MutationObserver to watch for changes in the DOM,
     // in case elements are loaded dynamically after initial DOMContentLoaded.
@@ -176,6 +235,7 @@
         replaceSalaryButton();
         // Also try to focus the search input on relevant pages
         focusSearchInput();
+        addCalendarLinkToVacationAccount();        
     });
 
     // Start observing the document body for child list changes and subtree changes
@@ -191,10 +251,12 @@
             addCustomNavbarLinks();
             replaceSalaryButton();
             focusSearchInput(); // Call focus function on DOMContentLoaded
+            addCalendarLinkToVacationAccount(); 
         });
     } else {
         addCustomNavbarLinks();
         replaceSalaryButton();
         focusSearchInput(); // Call focus function if DOM is already ready
+        addCalendarLinkToVacationAccount(); 
     }
 })();
